@@ -22,9 +22,9 @@ func readInputToList() []int {
 	}
 	return workingList
 }
-func checkForDups(newNum int, alreadyHave []int) bool {
+func checkForDups(newNum int, alreadyHave *[]int) bool {
 	// fmt.Printf("Already have = %v\n", alreadyHave)
-	for _, values := range alreadyHave {
+	for _, values := range *alreadyHave {
 		if newNum == values {
 			fmt.Printf("Found %v in alreadyhave\n", newNum)
 			return true
@@ -43,15 +43,13 @@ func main() {
 		}
 		newNum := workingList[index]
 		counter = counter + newNum
-		mycheck := checkForDups(counter, alreadyseen)
+		mycheck := checkForDups(counter, &alreadyseen)
 		if !mycheck {
-			//			counter = counter + newNum
 			alreadyseen = append(alreadyseen, counter)
 			interations = interations + 1
 		} else {
 			index = len(workingList) + 2
 		}
-		// break
 	}
 	fmt.Printf("%v\n", interations)
 }
