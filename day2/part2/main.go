@@ -21,6 +21,7 @@ func checkList(mystring string) (twos int, threes int) {
 	return mymap["Twos"], mymap["Threes"]
 }
 
+
 func checkForCloseMatch(word string, mylist []string) {
 	match := len(word)
 	wordList := strings.Split(word, "")
@@ -48,8 +49,6 @@ func checkForCloseMatch(word string, mylist []string) {
 	}
 }
 func main() {
-	//totalTwos := 0
-	//totalThrees := 0
 	var itemList []string
 	file, _ := os.Open("./input.txt")
 	defer file.Close()
