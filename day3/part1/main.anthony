@@ -22,38 +22,26 @@ func removeWhitespace(str string) string {
 }
 func main() {
 	//building our xy coordinate grid
-	grid := make(map[string][]int)
-
+	grid := make(map[int]map[int]int)
+	for x := 0; x < 1000; x++ {
+		grid[x] = map[int]int{}
+		for y := 0; y < 1000; y++ {
+			grid[x][y] = 0
+		}
+	}
 	file, _ := os.Open("./input.txt")
 	defer file.Close()
 	data := bufio.NewScanner(file)
 	for data.Scan() {
 		line := removeWhitespace(data.Text())
-		reqID := strings.Split(line, "@")[0]
+		//reqID := strings.Split(line, "@")[0]
 		xOffSet, _ := strconv.Atoi(strings.Split(strings.Split(strings.Split(line, "@")[1], ":")[0], ",")[0])
 		yOffSet, _ := strconv.Atoi(strings.Split(strings.Split(strings.Split(line, "@")[1], ":")[0], ",")[1])
 		xRun, _ := strconv.Atoi(strings.Split(strings.Split(strings.Split(line, "@")[1], ":")[1], "x")[0])
 		yRun, _ := strconv.Atoi(strings.Split(strings.Split(strings.Split(line, "@")[1], ":")[1], "x")[1])
-		grid[reqID] = []int{xOffSet, yOffSet, xRun, yRun}
-	}
-	// 	for addToX := 0; addToX < xRun; addToX++ {
-	// 		for addToY := 0; addToY < yRun; addToY++ {
-	// 			grid[xOffSet+addToX][yOffSet+addToY]++
-	// 		}
-	// 	}
-	// }
-
-	fabric := make([][]uint8, 1000)
-	for i := range fabric {
-		fabric[i] = make([]uint8, 1000)
-	}
-
-	for _, v := range grid {
-		et := v[0] + v[2]
-		bl := v[1] + v[3]
-		for i := v[0]; i < et; i++ {
-			for j := v[1]; j < bl; j++ {
-				fabric[i][j]++
+		for addToX := 0; addToX < xRun; addToX++ {
+			for addToY := 0; addToY < yRun; addToY++ {
+				grid[xOffSet+addToX][yOffSet+addToY]++
 			}
 		}
 	}

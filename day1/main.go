@@ -39,6 +39,7 @@ func main() {
 	var alreadyseen []int
 	for index := 0; index <= len(workingList); index++ {
 		if index == len(workingList) {
+			interations = interations + 1
 			index = 0
 		}
 		newNum := workingList[index]
@@ -46,7 +47,7 @@ func main() {
 		mycheck := checkForDups(counter, &alreadyseen)
 		if !mycheck {
 			alreadyseen = append(alreadyseen, counter)
-			interations = interations + 1
+			// interations = interations + 1
 		} else {
 			index = len(workingList) + 2
 		}
