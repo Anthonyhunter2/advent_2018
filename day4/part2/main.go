@@ -15,7 +15,7 @@ type guard struct {
 	minutesSlept []int
 }
 
-func main() {
+func Start() {
 	t := time.Now()
 	events := make(map[int][]string)
 	// building our map that holds our timestamp as the key
@@ -84,7 +84,6 @@ func main() {
 	answer2 := intpradictableSleeper * inOfMin
 	fmt.Println("Guy: ", pradictableSleeper, "Minute: ", inOfMin, "Answer: ", answer2)
 	fmt.Println("Total Time: ", time.Since(t))
-	os.Exit(0)
 
 	// Firgure out who slept the most
 	// sleptmost := 0
@@ -110,4 +109,8 @@ func main() {
 	// answer := intLazyDude * indexOfSleepiestMinute
 	// fmt.Println("Guy :", lazyDude, "Day :", indexOfSleepiestMinute, "Answer = ", answer)
 	// fmt.Println("Total Time: ", time.Since(t))
+}
+
+func main() {
+	Start()
 }
