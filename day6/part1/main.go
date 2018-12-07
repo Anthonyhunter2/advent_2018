@@ -16,6 +16,15 @@ type coords struct {
 	seen int
 }
 
+func amIHere(bad []int, check int) bool {
+	for _, i := range bad {
+		if i == check {
+			return true
+		}
+	}
+	return false
+}
+
 // Start is just here so we can wrap tests if we want to
 func Start() {
 	t := time.Now()
@@ -24,7 +33,7 @@ func Start() {
 	miny := 500
 	maxy := 0
 	mycoords := []coords{}
-	file, _ := os.Open("input.txt")
+	file, _ := os.Open("input2.txt")
 	defer file.Close()
 	data := bufio.NewScanner(file)
 	for data.Scan() {
@@ -50,8 +59,10 @@ func Start() {
 			maxy = y
 		}
 	}
-	for xrange := minx; xrange < maxx; xrange++ {
-		for yrange := miny; yrange < maxy; yrange++ {
+	infinate := []int{}
+
+	for xrange := minx; xrange <= maxx; xrange++ {
+		for yrange := miny; yrange <= maxy; yrange++ {
 			closest := 5000
 			shared := false
 			index := 0
@@ -63,6 +74,11 @@ func Start() {
 					closest = howFar
 					index = where
 					shared = false
+					if (yrange == maxy) || (xrange == maxx) || (xrange == minx) || (yrange == miny) {
+						if !amIHere(infinate, where) {
+							infinate = append(infinate, where)
+						}
+					}
 
 				} else if howFar == closest {
 					shared = true
@@ -72,16 +88,20 @@ func Start() {
 				mycoords[index].seen++
 			}
 		}
-	}
-	highestNum := 0
 
+	}
+	for _, cheater := range infinate {
+		mycoords[cheater].seen = 0
+	}
+
+	highestNum := 0
 	for _, highest := range mycoords {
 		if highest.seen > highestNum {
 			highestNum = highest.seen
 		}
 	}
 	fmt.Println(highestNum)
-	// fmt.Printf("MinX: %v, MaxX: %v, MinY: %v, MaxY %v\n", minx, maxx, miny, maxy)
+	fmt.Printf("MinX: %v, MaxX: %v, MinY: %v, MaxY %v\n", minx, maxx, miny, maxy)
 	fmt.Println(time.Since(t))
 }
 

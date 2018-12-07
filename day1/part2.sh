@@ -12,12 +12,18 @@ for (( i=0; i < ${#totalList[@]};i++));do
     freq=${totalList[i]}
     checknum=$(echo "$count $freq" | bc)
     #  echo "CheckNum $checknum"
-    if [[ $(grep "^$checknum$" checkfile.txt) ]]; then 
-        echo "FOUND: $checknum"
-        exit 0 
-    else echo "$checknum" >> checkfile.txt
+    # if [[ $(grep "^$checknum$" checkfile.txt) ]]; then 
+    #     echo "FOUND: $checknum"
+    #     exit 0 
+    # else echo "$checknum" >> checkfile.txt
+    # fi
+    if ${seenvalues[$checknum]};then
+        echo "DONE"
+        echo ${seenvalues[$checknum]}
+        stop=False
+        exit
     fi
-
+    
     # for x in ${seenvalues[@]}; do 
     #     checkagainst=$x
     #     if [[ $checknum -eq $checkagainst ]]; then
@@ -26,7 +32,7 @@ for (( i=0; i < ${#totalList[@]};i++));do
     #         exit 1
     #     fi
     # done
-    # seenvalues+=($checknum)
+    seenvalues+=($checknum)
      count=$(($checknum))
 
     done

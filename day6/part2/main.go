@@ -19,10 +19,10 @@ type coords struct {
 // Start is just here so we can wrap tests if we want to
 func Start() {
 	t := time.Now()
-	minx := 500
-	maxx := 0
-	miny := 500
-	maxy := 0
+	var minx = 500
+	var maxx int
+	var miny = 500
+	var maxy int
 	mycoords := []coords{}
 	file, _ := os.Open("input.txt")
 	defer file.Close()
@@ -32,10 +32,8 @@ func Start() {
 		splitLine := strings.Split(line, ", ")
 		x, _ := strconv.Atoi(splitLine[0])
 		y, _ := strconv.Atoi(splitLine[1])
-		fx := float64(x)
-		fy := float64(y)
 
-		addMe := coords{xv: fx, yv: fy, seen: 0}
+		addMe := coords{xv: float64(x), yv: float64(y), seen: 0}
 		mycoords = append(mycoords, addMe)
 		if minx > x {
 			minx = x
@@ -50,7 +48,7 @@ func Start() {
 			maxy = y
 		}
 	}
-	largetShared := []int{}
+	largetShared := 0
 	for xrange := minx; xrange < maxx; xrange++ {
 		for yrange := miny; yrange < maxy; yrange++ {
 			sharedCounter := 0
@@ -61,11 +59,11 @@ func Start() {
 				sharedCounter = sharedCounter + howFar
 			}
 			if sharedCounter < 10000 {
-				largetShared = append(largetShared, sharedCounter)
+				largetShared++
 			}
 		}
 	}
-	fmt.Println(len(largetShared))
+	fmt.Println(largetShared)
 	fmt.Println(time.Since(t))
 }
 
