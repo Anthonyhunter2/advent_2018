@@ -1,0 +1,184 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"sort"
+	"strings"
+	"time"
+)
+
+type notBefore struct {
+	Depends []string
+}
+
+func existsInList(s string, l []string) bool {
+	for _, check := range l {
+		if s == check {
+			return true
+		}
+	}
+	return false
+}
+
+func nextChar(start string, sets []notBefore) ([]string, []int) {
+	nextCheck := []string{}
+	itemscheck := []int{}
+	for index, items := range sets {
+		if !items.Checked {
+			if items.Needsfirst == start {
+				nextCheck = append(nextCheck, items.NextThing)
+				itemscheck = append(itemscheck, index)
+			}
+		}
+	}
+	sort.Strings(nextCheck)
+	fmt.Println(nextCheck, itemscheck)
+	return nextCheck, itemscheck
+}
+
+// Start is a main wrapper so we can do benchmarks
+func Start() {
+	t := time.Now()
+	sets := []notBefore{}
+	begins := []string{}
+	finishs := []string{}
+	file, _ := os.Open("input.txt")
+	defer file.Close()
+	data := bufio.NewScanner(file)
+	for data.Scan() {
+		line := strings.Split(data.Text(), " ")
+		begin := line[7]
+		finish := line[1]
+		begins = append(begins, begin)
+		finishs = append(finishs, finish)
+		addMe := notBefore{Needsfirst: finish, NextThing: begin, Checked: false}
+		sets = append(sets, addMe)
+	}
+	checkLater := []string{}
+	for _, each := range finishs {
+		if !existsInList(each, begins) {
+			if !existsInList(each, checkLater) {
+				checkLater = append(checkLater, each)
+			}
+		}
+	}
+	finishChar := ""
+	for _, each := range begins {
+		if !existsInList(each, finishs) {
+			finishChar = each
+		}
+	}
+	// for index, something := range sets {
+	// 	seen := false
+	// 	if something.Needsfirst == startingChar {
+	// 		checkLater = append(checkLater, something.NextThing)
+	// 		seen = true
+	// 	}
+	// 	if seen {
+	// 		sets[index].Checked = true
+	// 	}
+	// }
+	sort.Strings(checkLater)
+	finalString := []string{}
+	for {
+		fmt.Println(checkLater)
+		if len(checkLater) > 0 {
+			next, checked := nextChar(checkLater[0], sets)
+			if checkLater[0] != finishChar {
+				finalString = append(finalString, checkLater[0])
+			}
+			for _, things := range checked {
+				sets[things].Checked = true
+			}
+			checkLater = checkLater[1:]
+			for _, stuff := range next {
+				checkLater = append(checkLater, stuff)
+			}
+			fmt.Println(sets)
+			fmt.Println(checkLater)
+			os.Exit(0)
+		} else {
+			fmt.Println(checkLater)
+			fmt.Println(sets)
+			break
+		}
+		sort.Strings(checkLater)
+
+	}
+	fmt.Println(strings.Join(finalString, "") + finishChar)
+
+	// finalString := []string{startingChar}
+	// checkLater := []string{}
+	// addToList := []string{}
+	// // index := 0
+	// for index := range sets {
+	// 	if index == 0 {
+	// 		// available = nextChar(startingChar, sets)
+	// 		addToList = nextChar(startingChar, sets)
+	// 	}
+	// 	for _, each := range addToList {
+	// 		if !existsInList(each, checkLater) {
+	// 			if each != finishChar {
+	// 				checkLater = append(checkLater, each)
+	// 			}
+	// 		}
+	// 	}
+	// 	fmt.Println(checkLater)
+	// 	if len(checkLater) > 0 {
+
+	// 		sort.Strings(checkLater)
+
+	// 		nextUp := checkLater[0]
+	// 		checkLater = checkLater[1:]
+	// 		// fmt.Println(checkLater)
+	// 		// fmt.Println(finalString)
+	// 		finalString = append(finalString, nextUp)
+	// 		addToList = nextChar(nextUp, sets)
+	// 	} else {
+	// 		fmt.Println(checkLater)
+	// 		pfinal := strings.Join(finalString, "") + finishChar
+	// 		fmt.Println(pfinal)
+	// 		break
+	// 	}
+
+	// 	// 	sort.Strings(checkLater)
+	// 	// 	// finalString = append(finalString, available[index])
+	// 	// 	addToList = nextChar(addToList[0], sets)
+	// 	//else {
+	// 	// 	if len(addToList) == 0 {
+	// 	// 		fmt.Println("You reached the end")
+	// 	// 		// finalString = append(finalString, available[index])
+	// 	// 		// available = append(available, addToList[0])
+
+	// 	// 	} else {
+	// 	// 		available = append(available, addToList[0])
+	// 	// 		sort.Strings(available)
+	// 	// 		finalString = append(finalString, available[index])
+	// 	// 		addToList = nextChar(available[index], sets)
+	// 	// 	}
+	// 	// }
+
+	// 	// 	sort.Strings(available)
+	// 	// 	addToList = nextChar(available[index], sets)
+	// 	// 	index++
+	// 	// 	fmt.Println(available)
+	// 	// 	// mystop = true
+	// 	// } else {
+
+	// 	// 	if addToList[0] == finishChar {
+	// 	// 		mystop = true
+
+	// 	// 	} else {
+	// 	// 		addToList = nextChar(available[index], sets)
+	// 	// 		index++
+	// 	// 	}
+
+	// }
+	// fmt.Println(startingChar, finishChar)
+	fmt.Println(time.Since(t))
+}
+func main() {
+	Start()
+}

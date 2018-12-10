@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 func readInputToList() []int {
@@ -37,6 +38,8 @@ func main() {
 	counter := 0
 	interations := 1
 	var alreadyseen []int
+	t := time.Now()
+
 	for index := 0; index <= len(workingList); index++ {
 		if index == len(workingList) {
 			interations = interations + 1
@@ -52,5 +55,6 @@ func main() {
 			index = len(workingList) + 2
 		}
 	}
+	fmt.Println(time.Since(t))
 	fmt.Printf("%v\n", interations)
 }

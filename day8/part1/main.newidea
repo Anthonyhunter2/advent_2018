@@ -1,0 +1,163 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+)
+
+type metanumbers struct {
+	meta []int
+}
+type node struct {
+	NumchildNodes int
+	MetaNum       int
+	metaList      metanumbers
+}
+type rootNode struct {
+	MetaNum       int
+	childNodes    []node
+	NumchildNodes int
+	metalist      metanumbers
+}
+
+// func collectNodeInfo(fullListAsInts []int) (*node, []int) {
+// 	newNode := &node{}
+// 	for ind, val := range fullListAsInts {
+// 		if ind == 0 {
+// 			newNode.Header.childNodes = val
+// 			newNode.Header.MetaNum = fullListAsInts[ind+1]
+// 			if newNode.Header.childNodes == 0 {
+// 				for _, x := range fullListAsInts[ind+2 : newNode.Header.MetaNum+2] {
+// 					newNode.Header.metaList.meta = append(newNode.Header.metaList.meta, x)
+// 				}
+// 				fullListAsInts = fullListAsInts[newNode.Header.MetaNum+2:]
+// 			} else {
+// 				fullListAsInts = append(fullListAsInts[:ind], fullListAsInts[ind+2:]...)
+// 				if newNode.Header.MetaNum == 0 {
+// 					break
+// 				}
+// 				for _, x := range fullListAsInts[len(fullListAsInts)-newNode.Header.MetaNum:] {
+// 					newNode.Header.metaList.meta = append(newNode.Header.metaList.meta, x)
+// 				}
+// 				fullListAsInts = fullListAsInts[:len(fullListAsInts)-newNode.Header.MetaNum]
+// 			}
+// 		} else {
+// 			break
+// 		}
+// 	}
+// 	return newNode, fullListAsInts
+// }
+
+// Start is just here so we can wrap tests if we want to
+func Start() {
+	t := time.Now()
+	file, _ := os.Open("sample.txt")
+	defer file.Close()
+	fullListAsInts := []int{}
+	// tree := []node{}
+	data := bufio.NewScanner(file)
+	for data.Scan() {
+		each := strings.Split(data.Text(), " ")
+		for _, nums := range each {
+			addme, _ := strconv.Atoi(string(nums))
+			fullListAsInts = append(fullListAsInts, addme)
+		}
+
+	}
+	fmt.Println(fullListAsInts)
+	// newNode := &node{}
+	ourNodes := []rootNode{}
+	newNode := &rootNode{}
+	childNode := node{}
+	count := 0
+	ourNodeCount := -1
+	// totalchildren := 0
+	// for _, val := range fullListAsInts {
+	for range fullListAsInts {
+		fmt.Println("VAL", fullListAsInts[count])
+		children := fullListAsInts[count]
+		metanums := fullListAsInts[count+1]
+		if children > 0 {
+			newNode.NumchildNodes = children
+			newNode.MetaNum = metanums
+			ourNodes = append(ourNodes, *newNode)
+			ourNodeCount++
+			fmt.Println(ourNodes)
+			// Find and collect the children and add to the parent node
+			for j := 0; j < children; j++ {
+				// we know the first child will be 2+ the parent
+				childsChildren := fullListAsInts[count+2]
+				// childsMeta := fullListAsInts[count+3]
+				if childsChildren == 0 {
+					childNode.NumchildNodes = fullListAsInts[count+2]
+					childNode.MetaNum = fullListAsInts[count+3]
+					//if our child has no children, its meta numbers follow immeditly
+					// after it number of metas
+					for _, x := range fullListAsInts[count+4 : count+childNode.MetaNum+4] {
+						childNode.metaList.meta = append(childNode.metaList.meta, x)
+
+					}
+					//once we fully create our child node, we can delete it from our slice and add it to its parent
+					ourNodes[ourNodeCount].childNodes = append(ourNodes[ourNodeCount].childNodes, childNode)
+					metaWeJustAdded := ourNodes[ourNodeCount].childNodes[len(ourNodes[ourNodeCount].childNodes)-1].MetaNum
+					fullListAsInts = append(fullListAsInts[:count+2], fullListAsInts[count+4+metaWeJustAdded:]...)
+
+				} else if childsChildren > 0 {
+					os.Exit(1)
+				}
+				count += 2
+			}
+			fmt.Println(ourNodes)
+			fmt.Println(fullListAsInts)
+			// totalchildren = newNode.NumchildNodes
+			if newNode.NumchildNodes == 0 {
+				count += newNode.MetaNum + 2
+				// 	fmt.Println(count)
+				// 	for _, x := range fullListAsInts[count+2 : count+newNode.MetaNum+2] {
+				// 		ourNodes[ourNodeCount].metaList.meta = append(ourNodes[ourNodeCount].metaList.meta, x)
+				// 	}
+				// 	fullListAsInts = fullListAsInts[newNode.MetaNum+1:]
+				// 	break
+				// }
+			} else {
+				fmt.Println(fullListAsInts)
+				count += 2
+
+			}
+
+		}
+	}
+	fmt.Println(fullListAsInts)
+	// 		if ind == 0 {
+	// 			newNode.Header.childNodes = val
+	// 			newNode.Header.MetaNum = fullListAsInts[ind+1]
+	// 			if newNode.Header.childNodes == 0 {
+	// 				for _, x := range fullListAsInts[ind+2 : newNode.Header.MetaNum+2] {
+	// 					newNode.Header.metaList.meta = append(newNode.Header.metaList.meta, x)
+	// 				}
+	// 				fullListAsInts = fullListAsInts[newNode.Header.MetaNum+2:]
+	// 			} else {
+	// 				fullListAsInts = append(fullListAsInts[:ind], fullListAsInts[ind+2:]...)
+	// 				if newNode.Header.MetaNum == 0 {
+	// 					break
+	// 				}
+	// 				for _, x := range fullListAsInts[len(fullListAsInts)-newNode.Header.MetaNum:] {
+	// 					newNode.Header.metaList.meta = append(newNode.Header.metaList.meta, x)
+	// 				}
+	// 				fullListAsInts = fullListAsInts[:len(fullListAsInts)-newNode.Header.MetaNum]
+	// 			}
+	// 		} else {
+	// 			break
+	// 		}
+	// 	}
+	// 	return newNode, fullListAsInts
+	fmt.Println(time.Since(t))
+}
+
+func main() {
+	Start()
+}
